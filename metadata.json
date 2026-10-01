@@ -1,0 +1,6 @@
+{
+  "name": "MotCont",
+  "description": "Control de rendimiento de combustible: registra cargas con monto y kilometraje, calcula km/galón, costo/km y compara mes a mes",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
