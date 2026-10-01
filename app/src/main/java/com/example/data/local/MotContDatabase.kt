@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 /**
@@ -25,16 +26,18 @@ abstract class MotContDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: MotContDatabase? = null
+        private val dbScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-        fun getDatabase(context: Context, scope: CoroutineScope): MotContDatabase {
+        fun getDatabase(context: Context, scope: CoroutineScope = dbScope): MotContDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                lateinit var instance: MotContDatabase
+                instance = Room.databaseBuilder(
                     context.applicationContext,
                     MotContDatabase::class.java,
                     "motcont_database"
                 )
-                    .fallbackToDestructiveMigration()
-                    .addCallback(DatabaseCallback(scope))
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .addCallback(DatabaseCallback(scope) { instance })
                     .build()
                 INSTANCE = instance
                 instance
@@ -47,14 +50,14 @@ abstract class MotContDatabase : RoomDatabase() {
          * "¿Rinde igual que el mes pasado?", cumpliendo el criterio de aceptación desde el primer inicio.
          */
         private class DatabaseCallback(
-            private val scope: CoroutineScope
+            private val scope: CoroutineScope,
+            private val databaseProvider: () -> MotContDatabase
         ) : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                INSTANCE?.let { database ->
-                    scope.launch(Dispatchers.IO) {
-                        populateInitialData(database.motContDao())
-                    }
+                scope.launch(Dispatchers.IO) {
+                    val database = databaseProvider()
+                    populateInitialData(database.motContDao())
                 }
             }
 

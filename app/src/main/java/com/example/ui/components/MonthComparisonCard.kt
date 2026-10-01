@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.CompareArrows
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -51,7 +51,7 @@ fun MonthComparisonCard(
         differencePercent == null -> Triple(
             HighContrastBlue,
             HighContrastBlueContainer,
-            Icons.Default.CompareArrows
+            Icons.AutoMirrored.Filled.CompareArrows
         )
         differencePercent > 1.0 -> Triple(
             HighContrastGreen,

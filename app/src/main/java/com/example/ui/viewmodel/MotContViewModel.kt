@@ -226,8 +226,8 @@ class MotContViewModel(private val repository: FuelLogRepository) : ViewModel() 
 
     fun onPricePerGallonChanged(priceStr: String) {
         formPricePerGallon.value = priceStr
-        val price = priceStr.toDoubleOrNull()
-        val amount = formAmount.value.toDoubleOrNull()
+        val price = priceStr.trim().replace(',', '.').toDoubleOrNull()
+        val amount = formAmount.value.trim().replace(',', '.').toDoubleOrNull()
         // Si el usuario ingresa monto y precio por galón, calcular automáticamente los galones
         if (price != null && price > 0.0 && amount != null && amount > 0.0) {
             val calculatedGallons = amount / price
@@ -237,8 +237,8 @@ class MotContViewModel(private val repository: FuelLogRepository) : ViewModel() 
 
     fun onAmountChanged(amountStr: String) {
         formAmount.value = amountStr
-        val amount = amountStr.toDoubleOrNull()
-        val price = formPricePerGallon.value.toDoubleOrNull()
+        val amount = amountStr.trim().replace(',', '.').toDoubleOrNull()
+        val price = formPricePerGallon.value.trim().replace(',', '.').toDoubleOrNull()
         if (price != null && price > 0.0 && amount != null && amount > 0.0) {
             val calculatedGallons = amount / price
             formGallons.value = String.format(Locale.US, "%.2f", calculatedGallons)
@@ -247,8 +247,8 @@ class MotContViewModel(private val repository: FuelLogRepository) : ViewModel() 
 
     fun onGallonsChanged(gallonsStr: String) {
         formGallons.value = gallonsStr
-        val gallons = gallonsStr.toDoubleOrNull()
-        val amount = formAmount.value.toDoubleOrNull()
+        val gallons = gallonsStr.trim().replace(',', '.').toDoubleOrNull()
+        val amount = formAmount.value.trim().replace(',', '.').toDoubleOrNull()
         // Si ingresa galones y monto, calcular precio por galón
         if (gallons != null && gallons > 0.0 && amount != null && amount > 0.0) {
             val calculatedPrice = amount / gallons
@@ -266,9 +266,9 @@ class MotContViewModel(private val repository: FuelLogRepository) : ViewModel() 
      * 3. Fecha vacía o mal formateada: Se asegura formato ISO yyyy-MM-dd.
      */
     fun saveFuelLog() {
-        val odo = formOdometer.value.toDoubleOrNull()
-        val amount = formAmount.value.toDoubleOrNull()
-        val gals = formGallons.value.toDoubleOrNull()
+        val odo = formOdometer.value.trim().replace(',', '.').toDoubleOrNull()
+        val amount = formAmount.value.trim().replace(',', '.').toDoubleOrNull()
+        val gals = formGallons.value.trim().replace(',', '.').toDoubleOrNull()
         val dateStr = formDateString.value.trim()
 
         if (odo == null || odo <= 0.0) {
